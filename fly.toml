@@ -17,6 +17,10 @@ processes = []
   allowed_public_ports = []
   auto_rollback = true
 
+[mounts]
+  source="canary_metrics"
+  destination="/opt/canary/data"
+
 [[services]]
   http_checks = []
   internal_port = 8080
