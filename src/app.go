@@ -16,7 +16,7 @@ var resources embed.FS
 
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
-var db, err = sql.Open("sqlite3", "metrics.db")
+var db, err = sql.Open("sqlite3", "measurements.db")
 
 func checkErr(err error) {
 	if err != nil {
@@ -25,7 +25,7 @@ func checkErr(err error) {
 }
 
 func readFromDatabase() {
-	rows, err := db.Query("SELECT * FROM hello")
+	rows, err := db.Query("SELECT * FROM measurements")
 	checkErr(err)
 	var uid int
 	var name string
