@@ -7,7 +7,7 @@ WORKDIR /opt/canary/
 
 # database migrations
 COPY data data
-RUN sqlite3 data/metrics.db '.read data/migrations.sql'
+RUN sqlite3 data/measurements.db '.read data/migrations.sql'
 
 # compile
 COPY src/ .
@@ -16,6 +16,6 @@ RUN go build
 FROM alpine:latest
 RUN apk add --update gcc musl-dev
 WORKDIR /opt/canary/
-COPY --from=builder /opt/canary/data/metrics.db .
+COPY --from=builder /opt/canary/data/measurements.db .
 COPY --from=builder /opt/canary/canary .
 CMD ["./canary"]
