@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"embed"
 	"encoding/json"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"io/ioutil"
@@ -38,39 +37,40 @@ func checkErr(err error) {
 	}
 }
 
-func readFromDatabase() {
-	rows, err := db.Query("SELECT * FROM measurements")
+func readFromDatabase() Measurement {
+	rows, err := db.Query(`
+		SELECT
+			temperature,
+			pressure,
+			humidity,
+			gas_resistance,
+			iaq,
+			accuracy,
+			co2_equivalent,
+			voc_estimate
+		FROM measurements
+		LIMIT 1
+	`)
 	checkErr(err)
-	var temperature float32
-	var pressure float32
-	var humidity float32
-	var gas_resistance int
-	var iaq float32
-	var accuracy int
-	var co2_equivalent float32
-	var voc_estimate float32
-	var created_at string
+	var measurement Measurement
 	for rows.Next() {
 		err = rows.Scan(
-			&temperature,
-			&pressure,
-			&humidity,
-			&gas_resistance,
-			&iaq,
-			&accuracy,
-			&co2_equivalent,
-			&voc_estimate,
-			&created_at,
+			&measurement.Temperature,
+			&measurement.Pressure,
+			&measurement.Humidity,
+			&measurement.GasResistance,
+			&measurement.IAQ,
+			&measurement.Accuracy,
+			&measurement.CO2,
+			&measurement.VOC,
 		)
 		checkErr(err)
-		fmt.Println(temperature)
 	}
-
 	rows.Close()
+	return measurement
 }
 
 func recordMeasurement(measurement Measurement) {
-
 	const query = `
 		INSERT INTO measurements(
 			temperature,
@@ -109,12 +109,9 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		readFromDatabase()
-		data := map[string]string{
-			"Region": os.Getenv("FLY_REGION"),
-		}
+		var measurement = readFromDatabase()
 
-		t.ExecuteTemplate(w, "index.html.tmpl", data)
+		t.ExecuteTemplate(w, "index.html.tmpl", measurement)
 	})
 
 	http.HandleFunc("/measurement", func(w http.ResponseWriter, r *http.Request) {
