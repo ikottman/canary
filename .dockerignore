@@ -2,3 +2,4 @@ canary
 Dockerfile
 README.md
 fly.toml
+keys/

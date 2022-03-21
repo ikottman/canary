@@ -12,6 +12,7 @@ RUN sqlite3 data/measurements.db '.read data/migrations.sql'
 # install dependency to speed up builds
 COPY src/go.mod src/go.sum ./
 RUN go get github.com/mattn/go-sqlite3@v1.14.12
+RUN go get github.com/golang-jwt/jwt@v3.2.2
 
 # compile
 COPY src/ .
