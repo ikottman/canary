@@ -1,4 +1,4 @@
-canary
+app
 Dockerfile
 README.md
 fly.toml

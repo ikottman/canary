@@ -20,7 +20,7 @@ var resources embed.FS
 
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
-var db, err = sql.Open("sqlite3", "measurements.db")
+var db, _ = sql.Open("sqlite3", "measurements.db")
 
 type Measurement struct {
 	Temperature   float32
@@ -36,6 +36,18 @@ type Measurement struct {
 func checkErr(err error) {
 	if err != nil {
 		panic(err)
+	}
+}
+
+// check Authorization header contains a valid RS256 encoded JWT, signed with a private key which matches our CANARY_PUBLIC_KEY
+// returns an empty 401 if authentication fails
+func authenticated(f func(http.ResponseWriter, *http.Request)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if !auth.ValidateJwt(r.Header.Get("Authorization")) {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		f(w, r)
 	}
 }
 
@@ -103,6 +115,26 @@ func recordMeasurement(measurement Measurement) {
 	checkErr(error)
 }
 
+// route handlers
+
+func index(w http.ResponseWriter, r *http.Request) {
+	var measurement = readFromDatabase()
+	t.ExecuteTemplate(w, "index.html.tmpl", measurement)
+}
+
+func measurement(w http.ResponseWriter, r *http.Request) {
+	requestBody, _ := ioutil.ReadAll(r.Body)
+	var measurement Measurement
+	json.Unmarshal(requestBody, &measurement)
+	recordMeasurement(measurement)
+}
+
+func reset(w http.ResponseWriter, r *http.Request) {
+	stmt, err := db.Prepare("delete from measurements where 1=1")
+	checkErr(err)
+	stmt.Exec()
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -110,29 +142,9 @@ func main() {
 
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if !auth.ValidateJwt(r.Header.Get("Authorization")) {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		var measurement = readFromDatabase()
-
-		t.ExecuteTemplate(w, "index.html.tmpl", measurement)
-	})
-
-	http.HandleFunc("/measurement", func(w http.ResponseWriter, r *http.Request) {
-		requestBody, _ := ioutil.ReadAll(r.Body)
-		var measurement Measurement
-		json.Unmarshal(requestBody, &measurement)
-		recordMeasurement(measurement)
-	})
-
-	http.HandleFunc("/reset", func(w http.ResponseWriter, r *http.Request) {
-		stmt, err := db.Prepare("delete from measurements where 1=1")
-		checkErr(err)
-
-		stmt.Exec()
-	})
+	http.HandleFunc("/", authenticated(index))
+	http.HandleFunc("/measurement", authenticated(measurement))
+	http.HandleFunc("/reset", authenticated(reset))
 
 	log.Println("listening on", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
