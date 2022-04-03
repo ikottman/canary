@@ -12,3 +12,8 @@ openssl rsa -in cert/id_rsa -pubout -out id_rsa.pub
 base64 id_rsa > private_key_b64
 base64 id_rsa.pub > public_key_b64
 ```
+
+deploy server
+```
+flyctl deploy
+```
