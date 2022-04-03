@@ -4,13 +4,15 @@ import (
 	"database/sql"
 	"embed"
 	"encoding/json"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/ikottman/canary/auth"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 //go:embed templates/*
@@ -109,6 +111,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if !auth.ValidateJwt(r.Header.Get("Authorization")) {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		var measurement = readFromDatabase()
 
 		t.ExecuteTemplate(w, "index.html.tmpl", measurement)

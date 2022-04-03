@@ -12,6 +12,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	fmt.Println("Token:", token)
 
 	validated := auth.ValidateJwt(token)
 	fmt.Println("Valid:", validated)
