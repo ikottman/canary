@@ -139,10 +139,9 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
-
 	}
 
-	http.HandleFunc("/", authenticated(index))
+	http.HandleFunc("/", index)
 	http.HandleFunc("/measurement", authenticated(measurement))
 	http.HandleFunc("/reset", authenticated(reset))
 
