@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/ikottman/canary/auth"
+	"github.com/ikottman/canary/cat"
 )
 
 type Measurement struct {
@@ -22,7 +23,7 @@ type Measurement struct {
 	VOC           float32
 }
 
-func recordMeasurement(token string) {
+func recordMeasurement(measurement string, token string) {
 	body := &Measurement{
 		Temperature:   3.15,
 		Pressure:      1019.38,
@@ -53,5 +54,5 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	recordMeasurement(token)
+	cat.Cat("/dev/cu.usbmodem205F326F35561", token, recordMeasurement)
 }
