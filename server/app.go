@@ -51,7 +51,7 @@ func authenticated(f func(http.ResponseWriter, *http.Request)) func(http.Respons
 	}
 }
 
-func readFromDatabase() Measurement {
+func readFromDatabase(limit int) []Measurement {
 	rows, err := db.Query(`
 		SELECT
 			temperature,
@@ -63,25 +63,28 @@ func readFromDatabase() Measurement {
 			co2_equivalent,
 			voc_estimate
 		FROM measurements
-		LIMIT 1
-	`)
+		ORDER BY created_at DESC
+		LIMIT ?
+	`, limit)
 	checkErr(err)
-	var measurement Measurement
+	var measurements []Measurement
 	for rows.Next() {
+		var m Measurement
 		err = rows.Scan(
-			&measurement.Temperature,
-			&measurement.Pressure,
-			&measurement.Humidity,
-			&measurement.GasResistance,
-			&measurement.IAQ,
-			&measurement.Accuracy,
-			&measurement.CO2,
-			&measurement.VOC,
+			&m.Temperature,
+			&m.Pressure,
+			&m.Humidity,
+			&m.GasResistance,
+			&m.IAQ,
+			&m.Accuracy,
+			&m.CO2,
+			&m.VOC,
 		)
+		measurements = append(measurements, m)
 		checkErr(err)
 	}
 	rows.Close()
-	return measurement
+	return measurements
 }
 
 func recordMeasurement(measurement Measurement) {
@@ -116,10 +119,16 @@ func recordMeasurement(measurement Measurement) {
 }
 
 // route handlers
+type TemplateData struct {
+	Measurements []Measurement
+}
 
 func index(w http.ResponseWriter, r *http.Request) {
-	var measurement = readFromDatabase()
-	t.ExecuteTemplate(w, "index.html.tmpl", measurement)
+	var measurements = readFromDatabase(2)
+	data := TemplateData{
+		Measurements: measurements,
+	}
+	t.ExecuteTemplate(w, "index.html.tmpl", data)
 }
 
 func measurement(w http.ResponseWriter, r *http.Request) {

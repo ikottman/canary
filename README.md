@@ -17,3 +17,10 @@ deploy server
 ```
 flyctl deploy
 ```
+
+configuring uThing VOC
+```
+{"led":false}
+{"reportingPeriod":30}
+{"saveConfig":true}
+```
