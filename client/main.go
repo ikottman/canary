@@ -13,27 +13,22 @@ import (
 )
 
 type Measurement struct {
-	Temperature   float32
-	Pressure      float32
-	Humidity      float32
-	GasResistance int
-	IAQ           float32
-	Accuracy      int
-	CO2           float32
-	VOC           float32
+	Temperature   float32 `json:"temperature"`
+	Pressure      float32 `json:"pressure"`
+	Humidity      float32 `json:"humidity"`
+	GasResistance int     `json:"gasResistance"`
+	IAQ           float32 `json:"IAQ"`
+	Accuracy      int     `json:"iaqAccuracy"`
+	CO2           float32 `json:"eqCO2"`
+	VOC           float32 `json:"eqBreathVOC"`
 }
 
 func recordMeasurement(measurement string, token string) {
-	body := &Measurement{
-		Temperature:   3.15,
-		Pressure:      1019.38,
-		Humidity:      45.64,
-		GasResistance: 597617,
-		IAQ:           28.3,
-		Accuracy:      3,
-		CO2:           511.21,
-		VOC:           0.52,
-	}
+	// parse measurement to struct
+	body := Measurement{}
+	json.Unmarshal([]byte(measurement), &body)
+
+	// convert struct to buffer
 	payloadBuffer := new(bytes.Buffer)
 	json.NewEncoder(payloadBuffer).Encode(body)
 
