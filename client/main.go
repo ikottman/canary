@@ -24,6 +24,9 @@ type Measurement struct {
 }
 
 func recordMeasurement(measurement string, token string) {
+	if len(measurement) == 0 {
+		return
+	}
 	// parse measurement to struct
 	body := Measurement{}
 	json.Unmarshal([]byte(measurement), &body)
