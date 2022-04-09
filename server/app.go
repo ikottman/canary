@@ -23,14 +23,14 @@ var t = template.Must(template.ParseFS(resources, "templates/*"))
 var db, _ = sql.Open("sqlite3", "measurements.db")
 
 type Measurement struct {
-	Temperature   float32
-	Pressure      float32
-	Humidity      float32
-	GasResistance int
-	IAQ           float32
-	Accuracy      int
-	CO2           float32
-	VOC           float32
+	Temperature   float32 `json:"temperature"`
+	Pressure      float32 `json:"pressure"`
+	Humidity      float32 `json:"humidity"`
+	GasResistance int     `json:"gasResistance"`
+	IAQ           float32 `json:"IAQ"`
+	Accuracy      int     `json:"iaqAccuracy"`
+	CO2           float32 `json:"eqCO2"`
+	VOC           float32 `json:"eqBreathVOC"`
 }
 
 func checkErr(err error) {
