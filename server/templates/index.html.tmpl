@@ -6,8 +6,10 @@
 <body>
   <figure class="highcharts-figure">
       <div id="temperature"></div>
+      <div id="iaq"></div>
   </figure>
   <script>
+    // Temperature
     function toFahrenheit(celsius) {
       const temp = celsius * 9 / 5 + 32;
       return Math.round(temp * 100) / 100
@@ -54,6 +56,54 @@
             data: [
               {{range .Measurements}}
                   [Date.parse({{.CreatedAt}}), toFahrenheit({{.Temperature}})],
+              {{ end }}
+            ]
+        }]
+    });
+
+    // Air Quality
+    Highcharts.chart('iaq', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Air Quality'
+        },
+        time: {
+          useUTC: false
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display seconds or am/pm
+            millisecond: '%l:%M',
+            second: '%l:%M',
+            minute: '%l:%M',
+          },
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+            title: {
+                text: 'Air Quality (IAQ BSEC)'
+            }
+        },
+        tooltip: { // show seconds on hover
+          headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
+          pointFormat: '{point.y:.2f}'
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+            }
+        },
+        series: [{
+            name: 'IAQ',
+            data: [
+              {{range .Measurements}}
+                  [Date.parse({{.CreatedAt}}), {{.IAQ}}],
               {{ end }}
             ]
         }]
