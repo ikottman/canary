@@ -120,16 +120,29 @@ func recordMeasurement(measurement Measurement) {
 	)
 	checkErr(error)
 }
-
-// route handlers
-type TemplateData struct {
-	Measurements []Measurement
+func getAccuracy(accuracy int) string {
+	if accuracy == 0 {
+		return "invalid"
+	} else if accuracy == 1 {
+		return "good"
+	} else if accuracy == 2 {
+		return "better"
+	} else {
+		return "best"
+	}
 }
 
+type TemplateData struct {
+	Measurements []Measurement
+	Accuracy     string
+}
+
+// route handlers
 func index(w http.ResponseWriter, r *http.Request) {
 	var measurements = readFromDatabase(120)
 	data := TemplateData{
 		Measurements: measurements,
+		Accuracy:     getAccuracy(measurements[len(measurements)-1].Accuracy),
 	}
 	t.ExecuteTemplate(w, "index.html.tmpl", data)
 }

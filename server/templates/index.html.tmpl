@@ -3,17 +3,24 @@
 <head>
   <script src="https://code.highcharts.com/highcharts.js"></script>
 </head>
+<style>
+  .card {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    margin: 20px;
+  }
+</style>
 <body>
   <figure class="highcharts-figure">
-      <div id="temperature"></div>
-      <div id="iaq"></div>
+      <div class='card' id="iaq"></div>
+      <div class='card' id="temperature"></div>
   </figure>
   <script>
-    // Temperature
     function toFahrenheit(celsius) {
       const temp = celsius * 9 / 5 + 32;
       return Math.round(temp * 100) / 100
     }
+
+    // Temperature
     Highcharts.chart('temperature', {
         chart: {
             type: 'line'
@@ -86,7 +93,44 @@
         yAxis: {
             title: {
                 text: 'Air Quality (IAQ BSEC)'
+            },
+            plotBands: [{
+              from: 0,
+              to: 100,
+              color: '#dfd',
+              label: {
+                text: 'good',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 100,
+              to: 200,
+              color: '#ffffdd',
+              label: {
+                text: 'ok',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 200,
+              to: 500,
+              color: '#ffdddd',
+              label: {
+                text: 'bad',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
             }
+          ]
         },
         tooltip: { // show seconds on hover
           headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
@@ -100,7 +144,7 @@
             }
         },
         series: [{
-            name: 'IAQ',
+            name: 'IAQ (accuracy: {{.Accuracy}})',
             data: [
               {{range .Measurements}}
                   [Date.parse({{.CreatedAt}}), {{.IAQ}}],
