@@ -31,6 +31,7 @@ type Measurement struct {
 	Accuracy      int     `json:"iaqAccuracy"`
 	CO2           float32 `json:"eqCO2"`
 	VOC           float32 `json:"eqBreathVOC"`
+	CreatedAt     string  `json:createdAt`
 }
 
 func checkErr(err error) {
@@ -61,7 +62,8 @@ func readFromDatabase(limit int) []Measurement {
 			iaq,
 			accuracy,
 			co2_equivalent,
-			voc_estimate
+			voc_estimate,
+			created_at
 		FROM measurements
 		ORDER BY created_at DESC
 		LIMIT ?
@@ -79,6 +81,7 @@ func readFromDatabase(limit int) []Measurement {
 			&m.Accuracy,
 			&m.CO2,
 			&m.VOC,
+			&m.CreatedAt,
 		)
 		measurements = append(measurements, m)
 		checkErr(err)
@@ -124,7 +127,7 @@ type TemplateData struct {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	var measurements = readFromDatabase(2)
+	var measurements = readFromDatabase(120)
 	data := TemplateData{
 		Measurements: measurements,
 	}
