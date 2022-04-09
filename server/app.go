@@ -189,6 +189,10 @@ func reset(w http.ResponseWriter, r *http.Request) {
 	stmt.Exec()
 }
 
+func downloadDatabase(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "data/measurements.db")
+}
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -198,6 +202,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/measurement", authenticated(measurement))
 	http.HandleFunc("/reset", authenticated(reset))
+	http.HandleFunc("/download", authenticated(downloadDatabase))
 
 	log.Println("listening on", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
