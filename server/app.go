@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/ikottman/canary/auth"
@@ -139,7 +140,12 @@ type TemplateData struct {
 
 // route handlers
 func index(w http.ResponseWriter, r *http.Request) {
-	var measurements = readFromDatabase(120)
+	limitParam := r.URL.Query().Get("limit")
+	limit := 120
+	if limitParam != "" {
+		limit, _ = strconv.Atoi(limitParam)
+	}
+	var measurements = readFromDatabase(limit)
 	data := TemplateData{
 		Measurements: measurements,
 		Accuracy:     getAccuracy(measurements[len(measurements)-1].Accuracy),
