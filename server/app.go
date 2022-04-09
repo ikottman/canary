@@ -153,11 +153,34 @@ func index(w http.ResponseWriter, r *http.Request) {
 	t.ExecuteTemplate(w, "index.html.tmpl", data)
 }
 
-func measurement(w http.ResponseWriter, r *http.Request) {
+func readMeasurement(w http.ResponseWriter, r *http.Request) {
+	limitParam := r.URL.Query().Get("limit")
+	limit := 120
+	if limitParam != "" {
+		limit, _ = strconv.Atoi(limitParam)
+	}
+	var measurements = readFromDatabase(limit)
+	data := TemplateData{
+		Measurements: measurements,
+		Accuracy:     getAccuracy(measurements[len(measurements)-1].Accuracy),
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
+
+func createMeasurement(w http.ResponseWriter, r *http.Request) {
 	requestBody, _ := ioutil.ReadAll(r.Body)
 	var measurement Measurement
 	json.Unmarshal(requestBody, &measurement)
 	recordMeasurement(measurement)
+}
+
+func measurement(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		createMeasurement(w, r)
+	} else {
+		readMeasurement(w, r)
+	}
 }
 
 func reset(w http.ResponseWriter, r *http.Request) {
