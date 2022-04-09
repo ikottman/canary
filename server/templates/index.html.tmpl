@@ -230,7 +230,44 @@
         yAxis: {
             title: {
                 text: 'CO2 (ppm)'
+            },
+            plotBands: [{
+              from: 0,
+              to: 800,
+              color: '#dfd',
+              label: {
+                text: 'good',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 800,
+              to: 1000,
+              color: '#ffffdd',
+              label: {
+                text: 'ok',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 1000,
+              to: 3000,
+              color: '#ffdddd',
+              label: {
+                text: 'bad',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
             }
+          ]
         },
         tooltip: { // show seconds on hover
           headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
@@ -278,7 +315,44 @@
         yAxis: {
             title: {
                 text: 'VOC (ppm)'
+            },
+            plotBands: [{
+              from: 0,
+              to: 1,
+              color: '#dfd',
+              label: {
+                text: 'good',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 1,
+              to: 3,
+              color: '#ffffdd',
+              label: {
+                text: 'ok',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
+            },
+            {
+              from: 3,
+              to: 20,
+              color: '#ffdddd',
+              label: {
+                text: 'bad',
+                align: 'left',
+                style: {
+                  color: 'gray'
+                }
+              }
             }
+          ]
         },
         tooltip: { // show seconds on hover
           headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
