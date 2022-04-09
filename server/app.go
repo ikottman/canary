@@ -20,7 +20,7 @@ var resources embed.FS
 
 var t = template.Must(template.ParseFS(resources, "templates/*"))
 
-var db, _ = sql.Open("sqlite3", "measurements.db")
+var db, _ = sql.Open("sqlite3", "data/measurements.db")
 
 type Measurement struct {
 	Temperature   float32 `json:"temperature"`

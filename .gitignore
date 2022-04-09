@@ -2,4 +2,4 @@ canary
 keys/
 app
 main
-measurements.db
+data/measurements.db
