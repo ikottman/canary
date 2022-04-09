@@ -12,7 +12,11 @@
 <body>
   <figure class="highcharts-figure">
       <div class='card' id="iaq"></div>
+      <div class='card' id="co2"></div>
+      <div class='card' id="voc"></div>
       <div class='card' id="temperature"></div>
+      <div class='card' id="humidity"></div>
+      <div class='card' id="pressure"></div>
   </figure>
   <script>
     function toFahrenheit(celsius) {
@@ -148,6 +152,198 @@
             data: [
               {{range .Measurements}}
                   [Date.parse({{.CreatedAt}}), {{.IAQ}}],
+              {{ end }}
+            ]
+        }]
+    });
+
+    // Pressure
+    Highcharts.chart('pressure', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Pressure'
+        },
+        time: {
+          useUTC: false
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display seconds or am/pm
+            millisecond: '%l:%M',
+            second: '%l:%M',
+            minute: '%l:%M',
+          },
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+            title: {
+                text: 'Pressure (hPa)'
+            }
+        },
+        tooltip: { // show seconds on hover
+          headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
+          pointFormat: '{point.y:.2f}'
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+            }
+        },
+        series: [{
+            name: 'Pressure',
+            data: [
+              {{range .Measurements}}
+                  [Date.parse({{.CreatedAt}}), {{.Pressure}}],
+              {{ end }}
+            ]
+        }]
+    });
+
+    // CO2
+    Highcharts.chart('co2', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'CO2 Estimate'
+        },
+        time: {
+          useUTC: false
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display seconds or am/pm
+            millisecond: '%l:%M',
+            second: '%l:%M',
+            minute: '%l:%M',
+          },
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+            title: {
+                text: 'CO2 (ppm)'
+            }
+        },
+        tooltip: { // show seconds on hover
+          headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
+          pointFormat: '{point.y:.2f}'
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+            }
+        },
+        series: [{
+            name: 'CO2',
+            data: [
+              {{range .Measurements}}
+                  [Date.parse({{.CreatedAt}}), {{.CO2}}],
+              {{ end }}
+            ]
+        }]
+    });
+
+    // VOC
+    Highcharts.chart('voc', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Volatile Organic Compounds Estimate'
+        },
+        time: {
+          useUTC: false
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display seconds or am/pm
+            millisecond: '%l:%M',
+            second: '%l:%M',
+            minute: '%l:%M',
+          },
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+            title: {
+                text: 'VOC (ppm)'
+            }
+        },
+        tooltip: { // show seconds on hover
+          headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
+          pointFormat: '{point.y:.2f}'
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+            }
+        },
+        series: [{
+            name: 'VOC',
+            data: [
+              {{range .Measurements}}
+                  [Date.parse({{.CreatedAt}}), {{.VOC}}],
+              {{ end }}
+            ]
+        }]
+    });
+
+    // Humidity
+    Highcharts.chart('humidity', {
+        chart: {
+            type: 'line'
+        },
+        title: {
+            text: 'Humidity'
+        },
+        time: {
+          useUTC: false
+        },
+        xAxis: {
+          type: 'datetime',
+          dateTimeLabelFormats: { // don't display seconds or am/pm
+            millisecond: '%l:%M',
+            second: '%l:%M',
+            minute: '%l:%M',
+          },
+          title: {
+            text: 'Time'
+          }
+        },
+        yAxis: {
+            title: {
+                text: 'Humidity (% relative)'
+            }
+        },
+        tooltip: { // show seconds on hover
+          headerFormat: '<b>{point.x:%l:%M:%S %P}</b><br>',
+          pointFormat: '{point.y:.2f}'
+        },
+        plotOptions: {
+            line: {
+                dataLabels: {
+                    enabled: true
+                },
+            }
+        },
+        series: [{
+            name: 'Relative Humidity',
+            data: [
+              {{range .Measurements}}
+                  [Date.parse({{.CreatedAt}}), {{.Humidity}}],
               {{ end }}
             ]
         }]
