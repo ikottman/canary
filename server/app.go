@@ -23,6 +23,8 @@ var t = template.Must(template.ParseFS(resources, "templates/*"))
 
 var db, _ = sql.Open("sqlite3", "data/measurements.db")
 
+const CreateAtFormat = "2006-01-02T15:04:05Z"
+
 type Measurement struct {
 	Temperature   float32 `json:"temperature"`
 	Pressure      float32 `json:"pressure"`
@@ -117,10 +119,11 @@ func recordMeasurement(measurement Measurement) {
 		measurement.Accuracy,
 		measurement.CO2,
 		measurement.VOC,
-		time.Now().Format("2006-01-02T15:04:05Z"),
+		time.Now().Format(CreateAtFormat),
 	)
 	checkErr(error)
 }
+
 func getAccuracy(accuracy int) string {
 	if accuracy == 0 {
 		return "invalid"
@@ -133,8 +136,15 @@ func getAccuracy(accuracy int) string {
 	}
 }
 
+func formatTimestamp(timestamp string) string {
+	var displayFormat = "January 2, 2006 3:04:05 PM"
+	t, _ := time.Parse(CreateAtFormat, timestamp)
+	return t.Format(displayFormat)
+}
+
 type TemplateData struct {
 	Measurements []Measurement
+	Timestamp    string
 	Accuracy     string
 }
 
@@ -148,6 +158,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var measurements = readFromDatabase(limit)
 	data := TemplateData{
 		Measurements: measurements,
+		Timestamp:    formatTimestamp(measurements[len(measurements)-1].CreatedAt),
 		Accuracy:     getAccuracy(measurements[len(measurements)-1].Accuracy),
 	}
 	t.ExecuteTemplate(w, "index.html.tmpl", data)

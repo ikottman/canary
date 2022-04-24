@@ -8,8 +8,13 @@
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     margin: 20px;
   }
+  .timestamp {
+    color: grey;
+    font-size:smaller
+  }
 </style>
 <body>
+  <p class="timestamp">{{.Timestamp}}</p>
   <figure class="highcharts-figure">
       <div class='card' id="iaq"></div>
       <div class='card' id="co2"></div>
