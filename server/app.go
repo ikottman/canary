@@ -159,8 +159,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 	var measurements = readFromDatabase(limit)
 	data := TemplateData{
 		Measurements: measurements,
-		Timestamp:    formatTimestamp(measurements[len(measurements)-1].CreatedAt),
-		Accuracy:     getAccuracy(measurements[len(measurements)-1].Accuracy),
+		Timestamp:    formatTimestamp(measurements[0].CreatedAt),
+		Accuracy:     getAccuracy(measurements[0].Accuracy),
 	}
 	t.ExecuteTemplate(w, "index.html.tmpl", data)
 }
