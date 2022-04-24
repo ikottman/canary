@@ -52,5 +52,5 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	cat.Cat("/dev/cu.usbmodem205F326F35561", token, recordMeasurement)
+	cat.Cat("/dev/ttyACM0", token, recordMeasurement)
 }
