@@ -3,3 +3,6 @@ keys/
 app
 main
 data/measurements.db
+measurements.db
+log
+start_client.sh
