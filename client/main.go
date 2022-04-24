@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/ikottman/canary/auth"
 	"github.com/ikottman/canary/cat"
@@ -42,7 +41,6 @@ func recordMeasurement(measurement string, token string) {
 
 	if err != nil {
 		fmt.Print(err.Error())
-		os.Exit(1)
 	}
 }
 
