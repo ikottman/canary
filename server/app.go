@@ -139,7 +139,8 @@ func getAccuracy(accuracy int) string {
 func formatTimestamp(timestamp string) string {
 	var displayFormat = "January 2, 2006 3:04:05 PM"
 	t, _ := time.Parse(CreateAtFormat, timestamp)
-	return t.Format(displayFormat)
+	centralLocation, _ := time.LoadLocation("America/Chicago")
+	return t.In(centralLocation).Format(displayFormat)
 }
 
 type TemplateData struct {

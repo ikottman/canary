@@ -40,7 +40,7 @@ func recordMeasurement(measurement string, token string) {
 	var _, err = http.DefaultClient.Do(req)
 
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Println(err.Error())
 	}
 }
 
