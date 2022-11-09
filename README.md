@@ -1,3 +1,5 @@
+# DEPRECATED
+
 ```
 docker-compose up --build
 ```
